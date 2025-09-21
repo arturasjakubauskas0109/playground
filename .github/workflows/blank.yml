@@ -41,12 +41,12 @@ jobs:
 
       - name: Restore dependencies
         shell: powershell
-        run: dotnet restore MySolution.sln
+        run: dotnet restore
 
       - name: Build
         shell: powershell
-        run: dotnet build MySolution.sln --configuration Release
+        run: dotnet build --configuration Release
 
       - name: Run tests
         shell: powershell
-        run: dotnet test MySolution.sln --no-build
+        run: dotnet test --no-build
