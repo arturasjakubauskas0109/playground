@@ -8,12 +8,19 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    env:
-      DOTNET_ROOT: ${{ env.RUNNER_USERPROFILE }}\dotnet
-      PATH: ${{ env.RUNNER_USERPROFILE }}\dotnet;${{ env.PATH }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Set up local .NET environment
+        shell: powershell
+        run: |
+          # Define install directory
+          $InstallDir = "$env:USERPROFILE\dotnet"
+
+          # Set DOTNET_ROOT and prepend PATH for the rest of the job
+          echo "DOTNET_ROOT=$InstallDir" >> $env:GITHUB_ENV
+          echo "PATH=$InstallDir;$env:PATH" >> $env:GITHUB_ENV
 
       - name: Install .NET 8 locally
         shell: powershell
@@ -34,12 +41,12 @@ jobs:
 
       - name: Restore dependencies
         shell: powershell
-        run: dotnet restore
+        run: dotnet restore MySolution.sln
 
       - name: Build
         shell: powershell
-        run: dotnet build --configuration Release
+        run: dotnet build MySolution.sln --configuration Release
 
       - name: Run tests
         shell: powershell
-        run: dotnet test --no-build
+        run: dotnet test MySolution.sln --no-build
