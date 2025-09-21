@@ -40,7 +40,7 @@ jobs:
           $env:PATH = "$InstallDir;$env:PATH"
           $env:DOTNET_ROOT = $InstallDir
 
-          dotnet restore MySolution.sln
+          dotnet restore
 
       - name: Build
         shell: powershell
