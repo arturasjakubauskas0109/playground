@@ -44,7 +44,7 @@ jobs:
 
       - name: Restore dependencies
         shell: powershell
-        run: dotnet restor
+        run: dotnet restore
 
       - name: Build
         shell: powershell
