@@ -1,6 +1,16 @@
+name: Build .NET 8 project (self-hosted)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: self-hosted  # 👈 adjust if you used custom labels (e.g. self-hosted, windows, x64)
+
     steps:
       - uses: actions/checkout@v4
 
@@ -9,5 +19,11 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Display dotnet info
+      - name: Display .NET info
         run: dotnet --info
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
