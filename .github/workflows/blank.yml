@@ -1,4 +1,4 @@
-name: Build on Self-Hosted Runner
+name: Build on Self-Hosted Runner with .NET 8
 
 on:
   push:
@@ -8,29 +8,30 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    env:
+      # Ensure all steps use the local .NET installation
+      DOTNET_ROOT: ${{ env.USERPROFILE }}\dotnet
+      PATH: ${{ env.USERPROFILE }}\dotnet;${{ env.PATH }}
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install .NET 8 locally
         shell: powershell
         run: |
-          # Variables
           $DotnetVersion = "8.0.100"
           $InstallDir = "$env:USERPROFILE\dotnet"
+          $ScriptPath = "$env:TEMP\dotnet-install.ps1"
 
-          # Download dotnet-install script
-          $dotnetInstallScript = "$env:TEMP\dotnet-install.ps1"
-          Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $dotnetInstallScript
+          # Download the install script
+          Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $ScriptPath
 
-          # Install .NET 8
-          & $dotnetInstallScript -Version $DotnetVersion -InstallDir $InstallDir
-
-          # Update PATH for this workflow job
-          $env:PATH = "$InstallDir;$env:PATH"
+          # Install .NET 8 locally
+          & $ScriptPath -Version $DotnetVersion -InstallDir $InstallDir
 
           # Verify installation
           dotnet --version
+          dotnet --list-sdks
 
       - name: Restore dependencies
         shell: powershell
