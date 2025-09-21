@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    env:
+      DOTNET_ROOT: ${{ env.RUNNER_USERPROFILE }}\dotnet
+      PATH: ${{ env.RUNNER_USERPROFILE }}\dotnet;${{ env.PATH }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -16,18 +19,14 @@ jobs:
         shell: powershell
         run: |
           $DotnetVersion = "8.0.100"
-          $InstallDir = "$env:USERPROFILE\dotnet"
+          $InstallDir = "$env:DOTNET_ROOT"
           $ScriptPath = "$env:TEMP\dotnet-install.ps1"
 
-          # Download the install script
+          # Download install script
           Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $ScriptPath
 
           # Install .NET 8 locally
           & $ScriptPath -Version $DotnetVersion -InstallDir $InstallDir
-
-          # Update PATH and DOTNET_ROOT for the rest of this step
-          $env:PATH = "$InstallDir;$env:PATH"
-          $env:DOTNET_ROOT = $InstallDir
 
           # Verify installation
           dotnet --version
@@ -35,27 +34,12 @@ jobs:
 
       - name: Restore dependencies
         shell: powershell
-        run: |
-          $InstallDir = "$env:USERPROFILE\dotnet"
-          $env:PATH = "$InstallDir;$env:PATH"
-          $env:DOTNET_ROOT = $InstallDir
-
-          dotnet restore
+        run: dotnet restore
 
       - name: Build
         shell: powershell
-        run: |
-          $InstallDir = "$env:USERPROFILE\dotnet"
-          $env:PATH = "$InstallDir;$env:PATH"
-          $env:DOTNET_ROOT = $InstallDir
-
-          dotnet build --configuration Release
+        run: dotnet build --configuration Release
 
       - name: Run tests
         shell: powershell
-        run: |
-          $InstallDir = "$env:USERPROFILE\dotnet"
-          $env:PATH = "$InstallDir;$env:PATH"
-          $env:DOTNET_ROOT = $InstallDir
-
-          dotnet test --no-build
+        run: dotnet test --no-build
