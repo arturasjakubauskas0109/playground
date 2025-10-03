@@ -9,8 +9,6 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    env:
-      NUGET_PACKAGES_DIR: ${{ runner.tool_cache }}\nuget\packages
 
     steps:
       - name: Setup dotnet
@@ -25,18 +23,19 @@ jobs:
         with:
           clean: true
 
-      - name: Ensure nuget packages directory exists
+      - name: Setup NuGet packages directory
         run: |
-          $nugetPath = "${{ runner.tool_cache }}\nuget\packages"
-          if (-Not (Test-Path $nugetPath)) {
-              New-Item -ItemType Directory -Path $nugetPath
+          $env:NUGET_PACKAGES_DIR = "${{ runner.tool_cache }}\nuget\packages"
+          if (-Not (Test-Path $env:NUGET_PACKAGES_DIR)) {
+              New-Item -ItemType Directory -Path $env:NUGET_PACKAGES_DIR
           }
 
+
       - name: Restore dependencies
-        run: dotnet restore --packages "${{ runner.tool_cache }}\nuget\packages"
+        run: dotnet restore --packages "$env:NUGET_PACKAGES_DIR"
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore --packages "${{ runner.tool_cache }}\nuget\packages"
+        run: dotnet build --configuration Release --no-restore --packages "$env:NUGET_PACKAGES_DIR"
 
       - name: Run tests
         run: dotnet test --no-build
