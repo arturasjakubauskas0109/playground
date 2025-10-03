@@ -10,7 +10,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          clean: true
 
       # Step 1: Define persistent NuGet packages folder path in _tool
       - name: Set NuGet packages folder path
