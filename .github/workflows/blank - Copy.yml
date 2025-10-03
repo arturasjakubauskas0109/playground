@@ -8,15 +8,15 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-    env:
-      NUGET_PACKAGES_PATH: ${{ runner.temp }}\.nuget\packages
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      - name: Set NuGet packages folder path
+        run: echo "NUGET_PACKAGES_PATH=${{ runner.temp }}\.nuget\packages" >> $GITHUB_ENV
+        
       - name: Create NuGet packages folder
         run: |
-          $nugetPath = "${{ runner.temp }}\.nuget\packages"
           if (-not (Test-Path "$env:NUGET_PACKAGES_PATH")) {
             New-Item -ItemType Directory -Path "$env:NUGET_PACKAGES_PATH" | Out-Null
           }
