@@ -22,6 +22,7 @@ jobs:
             **/*.sln
         env:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+          NUGET_PACKAGES: ${{ runner.temp }}/.nuget/packages
           
       - name: Verify dotnet
         run: dotnet --list-sdks
