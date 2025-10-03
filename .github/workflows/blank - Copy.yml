@@ -13,27 +13,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           clean: true
-          
-      # Ensure NuGet package cache folder exists
-      - name: Ensure NuGet package folder exists
-        shell: powershell
-        run: |
-          $nugetPath = "${{ runner.tool_cache }}\nuget\packages"
-          if (-Not (Test-Path $nugetPath)) {
-              New-Item -ItemType Directory -Path $nugetPath
-          }
-
-      # Cache NuGet packages
-      - name: Cache NuGet packages
-        uses: actions/cache@v3
-        with:
-          path: ${{ runner.tool_cache }}\nuget\packages
-          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
-        shell: powershell
-
-      - name: Restore dependencies
-        shell: powershell
-        run: dotnet restore
 
       # # Step 1: Define persistent NuGet packages folder path in _tool
       # - name: Set NuGet packages folder path
@@ -52,17 +31,26 @@ jobs:
               # New-Item -ItemType Directory -Path $env:NUGET_PACKAGES_PATH | Out-Null
           # }
 
-      # Step 3: Setup .NET SDK
+      # Setup .NET SDK
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
         env:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+          
+      # Ensure NuGet package cache folder exists
+      - name: Ensure NuGet package folder exists
+        shell: powershell
+        run: |
+          $nugetPath = "${{ runner.tool_cache }}\nuget\packages"
+          if (-Not (Test-Path $nugetPath)) {
+              New-Item -ItemType Directory -Path $nugetPath
+          }
 
       - name: Restore dependencies
         shell: powershell
-        run: dotnet restore
+        run: dotnet restore --packages "${{ runner.tool_cache }}\nuget\packages"
 
       - name: Build
         shell: powershell
