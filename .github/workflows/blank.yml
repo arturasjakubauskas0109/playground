@@ -1,9 +1,8 @@
 name: Build on Self-Hosted Runner with .NET 8 in RUNNER_TOOL_CACHE
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
 
 jobs:
   build:
