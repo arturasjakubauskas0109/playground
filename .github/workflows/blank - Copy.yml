@@ -1,10 +1,3 @@
-name: Test install dotnet locally
-
-on:
-  push:
-    branches:
-      - main
-
 jobs:
   build:
     runs-on: self-hosted
@@ -12,17 +5,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 1: Define NuGet packages folder variable
+      # Step 1: Define NuGet packages folder path
       - name: Set NuGet packages folder path
-        run: echo "NUGET_PACKAGES_PATH=${{ runner.temp }}/.nuget/packages" >> $GITHUB_ENV
+        shell: powershell
+        run: |
+          $NugetPath = Join-Path $env:RUNNER_TEMP ".nuget\packages"
+          Write-Host "NuGet packages folder path: $NugetPath"
+          # Export to GitHub Actions environment
+          Add-Content -Path $env:GITHUB_ENV -Value "NUGET_PACKAGES_PATH=$NugetPath"
 
       # Step 2: Create the folder
       - name: Create NuGet packages folder
         shell: powershell
         run: |
-          Write-Host "Creating NuGet packages folder: $env:NUGET_PACKAGES_PATH"
           if (-not (Test-Path $env:NUGET_PACKAGES_PATH)) {
-            New-Item -ItemType Directory -Path $env:NUGET_PACKAGES_PATH | Out-Null
+              New-Item -ItemType Directory -Path $env:NUGET_PACKAGES_PATH | Out-Null
           }
 
       # Step 3: Setup .NET SDK
@@ -40,15 +37,3 @@ jobs:
 
       - name: Verify dotnet
         run: dotnet --list-sdks
-
-      - name: Restore dependencies
-        shell: powershell
-        run: dotnet restore
-
-      - name: Build
-        shell: powershell
-        run: dotnet build --configuration Release
-
-      - name: Run tests
-        shell: powershell
-        run: dotnet test --no-build
