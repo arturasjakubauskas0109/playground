@@ -1,3 +1,10 @@
+name: Test install dotnet locally
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
   build:
     runs-on: self-hosted
