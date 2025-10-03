@@ -24,6 +24,7 @@ jobs:
           clean: true
 
       - name: Setup NuGet packages directory
+        shell: powershell
         run: |
           $env:NUGET_PACKAGES_DIR = "${{ runner.tool_cache }}\nuget\packages"
           if (-Not (Test-Path $env:NUGET_PACKAGES_DIR)) {
@@ -32,10 +33,13 @@ jobs:
 
 
       - name: Restore dependencies
-        run: dotnet restore --packages $env:NUGET_PACKAGES_DIR
+        shell: powershell
+        run: dotnet restore --packages "$env:NUGET_PACKAGES_DIR"
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore --packages $env:NUGET_PACKAGES_DIR
+        shell: powershell
+        run: dotnet build --configuration Release --no-restore --packages "$env:NUGET_PACKAGES_DIR"
 
       - name: Run tests
+        shell: powershell
         run: dotnet test --no-build
