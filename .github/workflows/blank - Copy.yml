@@ -24,7 +24,7 @@ jobs:
           clean: true
 
       # Step 1: Define persistent NuGet packages folder path in _tool
-      - name: Set NuGet packages folder path
+      - name: Set NuGet packages path
         shell: powershell
         run: |
           $NugetPath = Join-Path $env:RUNNER_TOOL_CACHE "nuget\packages"
@@ -32,22 +32,18 @@ jobs:
           # Export to GitHub Actions environment
           Add-Content -Path $env:GITHUB_ENV -Value "NUGET_PACKAGES_PATH=$NugetPath"
 
-      # - name: Setup NuGet packages directory
+
+      # - name: Restore dependencies
         # shell: powershell
-        # run: |
-          # $env:NUGET_PACKAGES_DIR = "${{ runner.tool_cache }}\nuget\packages"
-          # if (-Not (Test-Path $env:NUGET_PACKAGES_DIR)) {
-              # New-Item -ItemType Directory -Path $env:NUGET_PACKAGES_DIR
-          # }
+        # run: dotnet restore --packages "$env:NUGET_PACKAGES_PATH"
 
-
-      - name: Restore dependencies
-        shell: powershell
-        run: dotnet restore --packages "$env:NUGET_PACKAGES_PATH"
-
+      # - name: Build
+        # shell: powershell
+        # run: dotnet build --configuration Release --no-restore --packages "$env:NUGET_PACKAGES_PATH"
+        
       - name: Build
         shell: powershell
-        run: dotnet build --configuration Release --no-restore --packages "$env:NUGET_PACKAGES_PATH"
+        run: dotnet build --configuration Release --packages "$env:NUGET_PACKAGES_PATH"
 
       - name: Run tests
         shell: powershell
