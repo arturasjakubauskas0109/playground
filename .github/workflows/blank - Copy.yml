@@ -32,10 +32,10 @@ jobs:
 
 
       - name: Restore dependencies
-        run: dotnet restore --packages "$env:NUGET_PACKAGES_DIR"
+        run: dotnet restore --packages $env:NUGET_PACKAGES_DIR
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore --packages "$env:NUGET_PACKAGES_DIR"
+        run: dotnet build --configuration Release --no-restore --packages $env:NUGET_PACKAGES_DIR
 
       - name: Run tests
         run: dotnet test --no-build
