@@ -45,3 +45,15 @@ jobs:
       # Step 4: Verify installed .NET SDK
       - name: Verify dotnet
         run: dotnet --list-sdks
+
+      - name: Restore dependencies
+        shell: powershell
+        run: dotnet restore
+
+      - name: Build
+        shell: powershell
+        run: dotnet build --configuration Release
+
+      - name: Run tests
+        shell: powershell
+        run: dotnet test --no-build
