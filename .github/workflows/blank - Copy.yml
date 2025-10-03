@@ -26,10 +26,10 @@ jobs:
       # Cache NuGet packages
       - name: Cache NuGet packages
         uses: actions/cache@v3
-        shell: powershell
         with:
           path: ${{ runner.tool_cache }}\nuget\packages
           key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+        shell: powershell
 
       - name: Restore dependencies
         shell: powershell
