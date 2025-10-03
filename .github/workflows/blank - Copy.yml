@@ -13,40 +13,42 @@ jobs:
         uses: actions/checkout@v4
         with:
           clean: true
+          
+      # Cache NuGet packages
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.RUNNER_TOOL_CACHE }}\.nuget\packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
 
-      # Step 1: Define persistent NuGet packages folder path in _tool
-      - name: Set NuGet packages folder path
+      - name: Restore dependencies
         shell: powershell
-        run: |
-          $NugetPath = Join-Path $env:RUNNER_TOOL_CACHE ".nuget\packages"
-          Write-Host "NuGet packages folder path: $NugetPath"
-          # Export to GitHub Actions environment
-          Add-Content -Path $env:GITHUB_ENV -Value "NUGET_PACKAGES_PATH=$NugetPath"
+        run: dotnet restore
 
-      # Step 2: Create the folder if it doesn't exist
-      - name: Create NuGet packages folder
-        shell: powershell
-        run: |
-          if (-not (Test-Path $env:NUGET_PACKAGES_PATH)) {
-              New-Item -ItemType Directory -Path $env:NUGET_PACKAGES_PATH | Out-Null
-          }
+      # # Step 1: Define persistent NuGet packages folder path in _tool
+      # - name: Set NuGet packages folder path
+        # shell: powershell
+        # run: |
+          # $NugetPath = Join-Path $env:RUNNER_TOOL_CACHE ".nuget\packages"
+          # Write-Host "NuGet packages folder path: $NugetPath"
+          # # Export to GitHub Actions environment
+          # Add-Content -Path $env:GITHUB_ENV -Value "NUGET_PACKAGES_PATH=$NugetPath"
+
+      # # Step 2: Create the folder if it doesn't exist
+      # - name: Create NuGet packages folder
+        # shell: powershell
+        # run: |
+          # if (-not (Test-Path $env:NUGET_PACKAGES_PATH)) {
+              # New-Item -ItemType Directory -Path $env:NUGET_PACKAGES_PATH | Out-Null
+          # }
 
       # Step 3: Setup .NET SDK
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
-          cache: true
-          cache-dependency-path: |
-            **/*.csproj
-            **/*.sln
         env:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
-          NUGET_PACKAGES: ${{ env.NUGET_PACKAGES_PATH }}
-
-      # Step 4: Verify installed .NET SDK
-      - name: Verify dotnet
-        run: dotnet --list-sdks
 
       - name: Restore dependencies
         shell: powershell
