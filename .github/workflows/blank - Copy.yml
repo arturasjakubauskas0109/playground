@@ -18,16 +18,17 @@ jobs:
       - name: Ensure NuGet package folder exists
         shell: powershell
         run: |
-          $nugetPath = "${{ runner.tool_cache }}\.nuget\packages"
+          $nugetPath = "${{ runner.tool_cache }}\nuget\packages"
           if (-Not (Test-Path $nugetPath)) {
               New-Item -ItemType Directory -Path $nugetPath
           }
 
       # Cache NuGet packages
       - name: Cache NuGet packages
+        shell: powershell
         uses: actions/cache@v3
         with:
-          path: ${{ runner.tool_cache }}\.nuget\packages
+          path: ${{ runner.tool_cache }}\nuget\packages
           key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
 
       - name: Restore dependencies
