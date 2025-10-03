@@ -12,16 +12,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 1: Define NuGet packages folder path
+      # Step 1: Define persistent NuGet packages folder path in _tool
       - name: Set NuGet packages folder path
         shell: powershell
         run: |
-          $NugetPath = Join-Path $env:RUNNER_TEMP ".nuget\packages"
+          $NugetPath = Join-Path $env:RUNNER_TOOL_CACHE ".nuget\packages"
           Write-Host "NuGet packages folder path: $NugetPath"
           # Export to GitHub Actions environment
           Add-Content -Path $env:GITHUB_ENV -Value "NUGET_PACKAGES_PATH=$NugetPath"
 
-      # Step 2: Create the folder
+      # Step 2: Create the folder if it doesn't exist
       - name: Create NuGet packages folder
         shell: powershell
         run: |
@@ -42,5 +42,6 @@ jobs:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
           NUGET_PACKAGES: ${{ env.NUGET_PACKAGES_PATH }}
 
+      # Step 4: Verify installed .NET SDK
       - name: Verify dotnet
         run: dotnet --list-sdks
