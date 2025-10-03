@@ -17,6 +17,9 @@ jobs:
         with:
           dotnet-version: '9.x'
           cache: true
+          cache-dependency-path:
+            - '**/*.csproj'
+            - '**/*.sln'
         env:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
           
