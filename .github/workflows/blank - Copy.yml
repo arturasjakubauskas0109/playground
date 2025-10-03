@@ -1,0 +1,64 @@
+name: Test install dotnet locally
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+          cache: true
+          
+      - name: Verify dotnet
+        run: dotnet --list-sdks
+
+      # - name: Set up runner-local .NET folder
+        # shell: powershell
+        # run: |
+          # # Use runner's tool cache folder
+          # $InstallDir = Join-Path $env:RUNNER_TOOL_CACHE "dotnet"
+
+          # # Ensure folder exists
+          # if (-not (Test-Path $InstallDir)) { New-Item -ItemType Directory -Path $InstallDir | Out-Null }
+
+          # # Set DOTNET_ROOT and prepend PATH for the rest of the job
+          # echo "DOTNET_ROOT=$InstallDir" >> $env:GITHUB_ENV
+          # echo "PATH=$InstallDir;$env:PATH" >> $env:GITHUB_ENV
+
+      # - name: Install .NET 8 locally
+        # shell: powershell
+        # run: |
+          # $DotnetVersion = "8.0.100"
+          # $InstallDir = $env:DOTNET_ROOT
+          # $ScriptPath = "$env:TEMP\dotnet-install.ps1"
+
+          # # Download install script
+          # Invoke-WebRequest -Uri "https://dot.net/v1/dotnet-install.ps1" -OutFile $ScriptPath
+
+          # # Install .NET 8 locally
+          # & $ScriptPath -Version $DotnetVersion -InstallDir $InstallDir
+
+          # # Verify installation
+          # dotnet --version
+          # dotnet --list-sdks
+
+      - name: Restore dependencies
+        shell: powershell
+        run: dotnet restore
+
+      - name: Build
+        shell: powershell
+        run: dotnet build --configuration Release
+
+      - name: Run tests
+        shell: powershell
+        run: dotnet test --no-build
