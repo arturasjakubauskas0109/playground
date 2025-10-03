@@ -17,6 +17,8 @@ jobs:
         with:
           dotnet-version: '9.x'
           cache: true
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
           
       - name: Verify dotnet
         run: dotnet --list-sdks
