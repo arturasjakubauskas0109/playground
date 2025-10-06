@@ -40,10 +40,6 @@ jobs:
     runs-on: [self-hosted, windows]
     needs: [build]
 
-  env:
-    NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../../_nuget/packages
-    DOTNET_VERSION: "9.x"
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
