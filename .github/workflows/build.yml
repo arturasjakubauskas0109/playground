@@ -1,4 +1,4 @@
-name: Build
+name: Release
 
 on:
   push:
@@ -13,6 +13,62 @@ env:
 jobs:
   build:
     runs-on: [self-hosted, windows]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
+    
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Test
+        run: dotnet test --no-build
+
+jobs:
+  deploy production:
+    runs-on: [self-hosted, windows]
+    needs: build
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
+    
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Test
+        run: dotnet test --no-build
+
+jobs:
+  deploy production2:
+    runs-on: [self-hosted, windows]
+    needs: build
+    environment: production2
 
     steps:
       - name: Checkout repository
