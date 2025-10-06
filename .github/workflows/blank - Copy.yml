@@ -1,36 +1,37 @@
-name: Build api
+name: Build
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+  
+env:
+  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../_nuget/packages
+  DOTNET_VERSION: "9.x"
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: [self-hosted, windows]
 
     steps:
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.x'
-        env:
-          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           clean: true
+    
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
 
       - name: Restore dependencies
-        shell: powershell
-        run: dotnet restore --packages "${{ runner.tool_cache }}\nuget\packages"
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Build
-        shell: powershell
-        run: dotnet build --configuration Release --no-restore --packages "${{ runner.tool_cache }}\nuget\packages"
+        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Run tests
-        shell: powershell
         run: dotnet test --no-build
