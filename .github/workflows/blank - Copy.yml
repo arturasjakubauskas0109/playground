@@ -1,4 +1,4 @@
-name: Build
+name: Build & Deploy
 
 on:
   push:
@@ -33,5 +33,35 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
-      - name: Run tests
+      - name: Test
+        run: dotnet test --no-build
+
+  deploy:
+    runs-on: [self-hosted, windows]
+    needs: [build]
+
+  env:
+    NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../../_nuget/packages
+    DOTNET_VERSION: "9.x"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
+    
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: IIS Deploy
         run: dotnet test --no-build
