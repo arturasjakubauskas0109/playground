@@ -43,4 +43,5 @@ jobs:
         run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: IIS Deploy
-        run: echo "Selected options: ${{ github.event.inputs.options }}"
+        run: |
+          echo "Selected options: ${{ github.event.inputs.options }}"
