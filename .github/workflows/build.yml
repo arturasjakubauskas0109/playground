@@ -36,7 +36,6 @@ jobs:
       - name: Test
         run: dotnet test --no-build
 
-jobs:
   deploy production:
     runs-on: [self-hosted, windows]
     needs: build
@@ -64,7 +63,6 @@ jobs:
       - name: Test
         run: dotnet test --no-build
 
-jobs:
   deploy production2:
     runs-on: [self-hosted, windows]
     needs: build
