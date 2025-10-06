@@ -1,9 +1,9 @@
-name: Release
+name: Deploy dev
 
 on:
   push:
     branches:
-      - main
+      - develop
   workflow_dispatch:
   
 env:
