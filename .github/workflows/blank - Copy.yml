@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   
 env:
-  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../_nuget/packages
+  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../../_nuget/packages
   DOTNET_VERSION: "9.x"
 
 jobs:
