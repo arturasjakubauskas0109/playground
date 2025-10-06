@@ -62,3 +62,57 @@ jobs:
 
       - name: IIS Deploy
         run: dotnet test --no-build
+
+  deploy_second:
+    runs-on: [self-hosted, windows]
+    needs: [build]
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
+    
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: IIS Deploy
+        run: dotnet test --no-build
+
+  deploy_third:
+    runs-on: [self-hosted, windows]
+    needs: [build]
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
+    
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: IIS Deploy
+        run: dotnet test --no-build
