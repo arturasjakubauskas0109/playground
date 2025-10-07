@@ -9,8 +9,8 @@ on:
 env:
   DOTNET_VERSION: "9.x"
   NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
-  PROJECT: ConsoleApp1\ConsoleApp1.csproj
-  TEST_PROJECT: TestProject1\TestProject1.csproj
+  PROJECT_PATH: ConsoleApp1\ConsoleApp1.csproj
+  TEST_PROJECT_PATH: TestProject1\TestProject1.csproj
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           clean: true
-    
+ 
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
@@ -29,17 +29,13 @@ jobs:
         env:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
 
-      - name: Restore dependencies
-        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
       - name: Build
-        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+        run: dotnet build ${{ env.project_path }} --configuration release --packages ${{ env.nuget_packages_directory }}
 
-      # - name: Test
-        # run: |
-          # dotnet restore ${{ env.PROJECT_PATH }} --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-          # dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
-          # dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
+      - name: Test
+        run: |
+          dotnet build ${{ env.TEST_PROJECT_PATH }} --configuration Release --packages ${{ env.nuget_packages_directory }}
+          dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
 
   # test:
     # runs-on: [self-hosted, windows]
@@ -88,13 +84,13 @@ jobs:
         env:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
 
-      - name: Restore dependencies
-        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+      # - name: Restore dependencies
+        # run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+        run: dotnet build --configuration Release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
-      - name: Test
+      - name: Publish
         run: dotnet publish "REH.KFM.Service\REH.KFM.Service.csproj" -c release -o "${DeployPath}" /p:EnvironmentName=$Environment --no-build
 
   deploy_production2:

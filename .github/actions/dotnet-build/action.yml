@@ -1,0 +1,15 @@
+name: Dotnet Build
+description: Builds dotnet project
+inputs:
+  dotnet_version:
+    required: true
+  nuget_packages_directory:
+    required: true
+  project_path:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build
+      run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ inputs.nuget_packages_directory }}
