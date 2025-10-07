@@ -14,28 +14,35 @@ env:
 
 jobs:
   build:
-    runs-on: [self-hosted, windows]
+    uses: ./.github/workflows/build.yml
+    with:
+      dotnet_version: ${{ env.DOTNET_VERSION }}
+      project_path: ${{ env.PROJECT_PATH }}
+      test_project_path: ${{ env.TEST_PROJECT_PATH }}
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          clean: true
+  # build:
+    # runs-on: [self-hosted, windows]
+
+    # steps:
+      # - name: Checkout repository
+        # uses: actions/checkout@v4
+        # with:
+          # clean: true
  
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-        env:
-          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
+      # - name: Setup dotnet
+        # uses: actions/setup-dotnet@v4
+        # with:
+          # dotnet-version: ${{ env.DOTNET_VERSION }}
+        # env:
+          # DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
 
-      - name: Build
-        run: dotnet build ${{ env.project_path }} --configuration release --packages ${{ env.nuget_packages_directory }}
+      # - name: Build
+        # run: dotnet build ${{ env.PROJECT_PATH }} -c release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
-      - name: Test
-        run: |
-          dotnet build ${{ env.TEST_PROJECT_PATH }} --configuration Release --packages ${{ env.nuget_packages_directory }}
-          dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
+      # - name: Test
+        # run: |
+          # dotnet build ${{ env.TEST_PROJECT_PATH }} -c Release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+          # dotnet test ${{ env.TEST_PROJECT_PATH }} -c Release --no-build
 
   # test:
     # runs-on: [self-hosted, windows]
@@ -69,7 +76,7 @@ jobs:
     needs: build
     environment: production
     env:
-      IIS_DEPLOYMENT_PATH: C:\rehau\services\dev\REH.KFM
+      DEPLOYMENT_PATH: C:\rehau\services\dev\REH.KFM
 
     steps:
       - name: Checkout repository
@@ -88,10 +95,10 @@ jobs:
         # run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Build
-        run: dotnet build --configuration Release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+        run: dotnet build ${{ env.PROJECT_PATH }} -c release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Publish
-        run: dotnet publish "REH.KFM.Service\REH.KFM.Service.csproj" -c release -o "${DeployPath}" /p:EnvironmentName=$Environment --no-build
+        run: dotnet publish "${{ env.PROJECT_PATH }}" -c release -o "${{ env.DEPLOYMENT_PATH }}" /p:EnvironmentName=$Environment --no-build
 
   deploy_production2:
     runs-on: [self-hosted, windows]

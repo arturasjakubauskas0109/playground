@@ -1,0 +1,43 @@
+name: Build
+description: Builds dotnet project and optionally run tests if test project path is specified
+
+on:
+  workflow_call:
+    inputs:
+      dotnet_version:
+        required: true
+        type: string
+      project_path:
+        required: true
+        type: string
+      test_project_path:
+        required: false
+        type: string
+
+env:
+  NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
+
+jobs:
+  build:
+    runs-on: [self-hosted, windows]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Build project
+        run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Test
+        if: ${{ inputs.test_project_path != '' }}
+        run: |
+          dotnet build ${{ inputs.test_project_path }} -c Release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+          dotnet test ${{ inputs.test_project_path }} -c Release --no-build
