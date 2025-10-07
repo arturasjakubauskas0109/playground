@@ -37,33 +37,6 @@ jobs:
           dotnet build ${{ env.test_project_path }} -c release --packages ${{ env.nuget_packages_directory }}
           dotnet test ${{ env.test_project_path }} -c release --no-build
 
-  # test:
-    # runs-on: [self-hosted, windows]
-    # needs: build
-
-    # steps:
-      # - name: Checkout repository
-        # uses: actions/checkout@v4
-        # with:
-          # clean: true
-    
-      # - name: Setup dotnet
-        # uses: actions/setup-dotnet@v4
-        # with:
-          # dotnet-version: ${{ env.DOTNET_VERSION }}
-        # env:
-          # DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
-
-      # - name: Restore dependencies
-        # run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      # - name: Build
-        # run: dotnet build ${{ env.TEST_PROJECT }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      # - name: Test
-        # run: |
-          # dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
-
   deploy_prod1:
     uses: ./.github/workflows/_deploy.yml
     with:
@@ -74,7 +47,6 @@ jobs:
     needs: build
 
   deploy_prod2:
-    needs: build
     uses: ./.github/workflows/_deploy.yml
     with:
       dotnet_version: "9.x"
