@@ -5,6 +5,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+    branches:
+      - main
   
 # env:
   # DOTNET_VERSION: "9.x"
@@ -52,6 +54,8 @@ jobs:
       aspnetcore_environment: prod_wit
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
+      iis_server_hostname: BSS-PC-75
+      iis_app_pool_name: kfm-api
       deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
 
@@ -59,9 +63,11 @@ jobs:
     uses: ./.github/workflows/_deploy.yml
     with:
       github_environment: production2
-      aspnetcore_environment: "prod_srem"
-      dotnet_version: "9.x"
+      aspnetcore_environment: prod_srem
+      dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
+      iis_server_hostname: BSS-PC-75
+      iis_app_pool_name: kfm-api
       deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
 

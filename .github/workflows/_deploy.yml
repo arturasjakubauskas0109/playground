@@ -16,12 +16,18 @@ on:
       project_path:
         required: true
         type: string
+      iis_server_hostname:
+        required: true
+        type: string
+      iis_app_pool_name:
+        required: true
+        type: string
       deployment_path:
         required: true
         type: string
 
 env:
-  NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
+  NUGET_PACKAGES_CACHE_DIR: ..\..\_nuget\packages
 
 jobs:
   deploy:
@@ -40,11 +46,18 @@ jobs:
           DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
 
       - name: Restore dependencies
-        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_CACHE_DIR }}
 
       - name: Build project
-        run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+        run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_CACHE_DIR }}
 
       - name: Publish
-        run: dotnet publish "${{ inputs.project_path }}" -c release -o "${{ inputs.deployment_path }}" /p:EnvironmentName=${{ inputs.aspnetcore_environment }} --no-build
+        run: dotnet publish "${{ inputs.project_path }}" -c release -o ./publish /p:EnvironmentName=${{ inputs.aspnetcore_environment }} --no-build
+        
+      - name: Stop IIS App Pool
+        shell: pwsh
+        run: |
+          Invoke-Command -ComputerName "${{ inputs.iis_server_hostname }}" `
+                         -ScriptBlock { param($p1) Stop-WebAppPool -Name $p1 } `
+                         -ArgumentList "${{ inputs.iis_application_pool }}"
 
