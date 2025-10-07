@@ -65,31 +65,32 @@ jobs:
           # dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
 
   deploy_prod1:
-    needs: build
-    environment: production
     uses: ./.github/workflows/_deploy.yml
     with:
       dotnet_version: "9.x"
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM
+    needs: build
+    environment: production
 
   deploy_prod2:
     needs: build
-    environment: production
     uses: ./.github/workflows/_deploy.yml
     with:
       dotnet_version: "9.x"
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM
-
-  deploy_prod3:
     needs: build
     environment: production
+
+  deploy_prod3:
     uses: ./.github/workflows/_deploy.yml
     with:
       dotnet_version: "9.x"
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM
+    needs: build
+    environment: production
 
   # deploy_production:
     # runs-on: [self-hosted, windows]
