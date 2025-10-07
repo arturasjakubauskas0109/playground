@@ -41,7 +41,7 @@ jobs:
           # dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
           # dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
 
-  Test AAA:
+  test:
     runs-on: [self-hosted, windows]
 
     steps:
