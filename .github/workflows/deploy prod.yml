@@ -43,6 +43,7 @@ jobs:
 
   test:
     runs-on: [self-hosted, windows]
+    needs: build
 
     steps:
       - name: Checkout repository
@@ -69,7 +70,7 @@ jobs:
 
   deploy_production:
     runs-on: [self-hosted, windows]
-    needs: build
+    needs: test
     environment: production
     env:
       IIS_DEPLOYMENT_PATH: C:\rehau\services\dev\REH.KFM
@@ -98,7 +99,7 @@ jobs:
 
   deploy_production2:
     runs-on: [self-hosted, windows]
-    needs: build
+    needs: test
     environment: production2
 
     steps:
