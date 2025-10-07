@@ -6,12 +6,16 @@ on:
     inputs:
       environment:
         required: true
+        type: string
       dotnet_version:
         required: true
+        type: string
       project_path:
         required: true
+        type: string
       deployment_path:
         required: true
+        type: string
 
 env:
   NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
