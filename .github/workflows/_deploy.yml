@@ -55,7 +55,7 @@ jobs:
         run: dotnet publish "${{ inputs.project_path }}" -c release -o ./publish /p:EnvironmentName=${{ inputs.aspnetcore_environment }} --no-build
         
       - name: Stop IIS App Pool
-        shell: pwsh
+        shell: powershell
         run: |
           Invoke-Command -ComputerName "${{ inputs.iis_server_hostname }}" `
                          -ScriptBlock { param($p1) Stop-WebAppPool -Name $p1 } `
