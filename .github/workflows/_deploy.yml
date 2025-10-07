@@ -4,15 +4,14 @@ description: Deploys dotnet project
 on:
   workflow_call:
     inputs:
+      environment:
+        required: true
       dotnet_version:
         required: true
-        type: string
       project_path:
         required: true
-        type: string
       deployment_path:
         required: true
-        type: string
 
 env:
   NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
@@ -20,6 +19,7 @@ env:
 jobs:
   deploy:
     runs-on: [self-hosted, windows]
+    environment: ${{ inputs.environment }}
 
     steps:
       - name: Checkout repository
