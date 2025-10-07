@@ -62,8 +62,7 @@ jobs:
                          -ArgumentList "${{ inputs.iis_app_pool }}"
 
       - name: Copy published api to deployment path
-        run: |
-          xcopy .\publish\* "${{ inputs.deployment_path }}" /E /Y /I
+        run: xcopy .\publish\* "${{ inputs.deployment_path }}" /E /Y /I
 
       - name: Start IIS App Pool
         shell: powershell
