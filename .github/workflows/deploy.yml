@@ -1,0 +1,43 @@
+name: Deploy
+description: Deploys dotnet project
+
+on:
+  workflow_call:
+    inputs:
+      dotnet_version:
+        required: true
+        type: string
+      project_path:
+        required: true
+        type: string
+      deployment_path:
+        required: true
+        type: string
+
+env:
+  NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, windows]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Build project
+        run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
+      - name: Publish
+        run: dotnet publish "${{ inputs.project_path }}" -c release -o "${{ env.DEPLOYMENT_PATH }}" /p:EnvironmentName=$Environment --no-build
+
