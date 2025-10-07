@@ -32,7 +32,7 @@ jobs:
         run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Build
-        run: dotnet build ${{ PROJECT_PATH }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Test
         run: dotnet test --no-build
