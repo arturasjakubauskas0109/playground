@@ -37,8 +37,9 @@ jobs:
 
       - name: Test
         run: |
-          dotnet restore ${{ env.TEST_PROJECT }} --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-          dotnet test ${{ env.TEST_PROJECT }} --no-restore
+          dotnet restore ${{ env.PROJECT_PATH }} --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+          dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+          dotnet test ${{ env.TEST_PROJECT }} --no-build
 
   deploy_production:
     runs-on: [self-hosted, windows]
