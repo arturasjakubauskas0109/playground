@@ -16,7 +16,7 @@ on:
       project_path:
         required: true
         type: string
-      iis_server_hostname:
+      iis_hostname:
         required: true
         type: string
       iis_app_pool:
@@ -54,19 +54,21 @@ jobs:
       - name: Publish
         run: dotnet publish "${{ inputs.project_path }}" -c release -o ./publish /p:EnvironmentName=${{ inputs.aspnetcore_environment }} --no-build
         
-      - name: Stop IIS App Pool
+      - name: Stop IIS app pool
+        if: ${{ inputs.iis_hostname != '' && inputs.iis_app_pool != '' }}
         shell: powershell
         run: |
-          Invoke-Command -ComputerName "${{ inputs.iis_server_hostname }}" `
+          Invoke-Command -ComputerName "${{ inputs.iis_hostname }}" `
                          -ScriptBlock { param($p1) Stop-WebAppPool -Name $p1 } `
                          -ArgumentList "${{ inputs.iis_app_pool }}"
 
       - name: Copy published api to deployment path
         run: xcopy .\publish\* "${{ inputs.deployment_path }}" /E /Y /I
 
-      - name: Start IIS App Pool
+      - name: Start IIS app pool
+        if: ${{ inputs.iis_hostname != '' && inputs.iis_app_pool != '' }}
         shell: powershell
         run: |
-          Invoke-Command -ComputerName "${{ inputs.iis_server_hostname }}" `
+          Invoke-Command -ComputerName "${{ inputs.iis_hostname }}" `
                          -ScriptBlock { param($p1) Start-WebAppPool -Name $p1 } `
                          -ArgumentList "${{ inputs.iis_app_pool }}"

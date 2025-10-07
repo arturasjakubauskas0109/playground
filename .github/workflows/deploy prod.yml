@@ -54,7 +54,7 @@ jobs:
       aspnetcore_environment: prod_wit
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
-      iis_server_hostname: BSS-PC-75
+      iis_hostname: BSS-PC-75
       iis_app_pool: kfm-api
       deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
@@ -66,7 +66,7 @@ jobs:
       aspnetcore_environment: prod_srem
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
-      iis_server_hostname: BSS-PC-75
+      iis_hostname: BSS-PC-75
       iis_app_pool: kfm-api
       deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
