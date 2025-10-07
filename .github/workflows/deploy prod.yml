@@ -7,8 +7,9 @@ on:
   workflow_dispatch:
   
 env:
-  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../../_nuget/packages
   DOTNET_VERSION: "9.x"
+  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../../_nuget/packages
+  PROJECT_PATH: REH.KFM.Service/REH.KFM.Service.csproj
 
 jobs:
   build:
@@ -31,7 +32,7 @@ jobs:
         run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+        run: dotnet build ${{ PROJECT_PATH }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Test
         run: dotnet test --no-build
@@ -40,6 +41,8 @@ jobs:
     runs-on: [self-hosted, windows]
     needs: build
     environment: production
+    env:
+      IIS_DEPLOYMENT_PATH: C:/rehau/services/dev/REH.KFM
 
     steps:
       - name: Checkout repository
@@ -61,7 +64,7 @@ jobs:
         run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Test
-        run: dotnet test --no-build
+        run: dotnet publish "REH.KFM.Service\REH.KFM.Service.csproj" -c release -o "${DeployPath}" /p:EnvironmentName=$Environment --no-build
 
   deploy_production2:
     runs-on: [self-hosted, windows]
