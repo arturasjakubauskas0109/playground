@@ -25,10 +25,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ inputs.dotnet_version }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
 
       - name: Restore dependencies
         run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
