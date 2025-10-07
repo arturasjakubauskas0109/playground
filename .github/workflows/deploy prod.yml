@@ -9,7 +9,8 @@ on:
 env:
   DOTNET_VERSION: "9.x"
   NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
-  PROJECT_PATH: .\ConsoleApp1.csproj
+  PROJECT: ConsoleApp1\ConsoleApp1.csproj
+  TEST_PROJECT: TestProject1\TestProject1.csproj
 
 jobs:
   build:
@@ -35,7 +36,7 @@ jobs:
         run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Test
-        run: dotnet test --no-build
+        run: dotnet test ${{ env.TEST_PROJECT }} --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
   deploy_production:
     runs-on: [self-hosted, windows]
