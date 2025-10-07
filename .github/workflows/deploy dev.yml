@@ -7,16 +7,15 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build:
-    uses: ./.github/workflows/_build.yml
+    uses: ./.github/workflows/templates/build.yml
     with:
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
       test_project_path: TestProject1\TestProject1.csproj
 
   deploy_wit_dev:
-    uses: ./.github/workflows/_deploy.yml
+    uses: ./.github/workflows/templates/deploy.yml
     with:
       github_environment: development
       aspnetcore_environment: Development

@@ -1,54 +1,20 @@
-name: Deploy prod
+name: Deploy Production
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     branches:
       - main
-  
-# env:
-  # DOTNET_VERSION: "9.x"
-  # NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
-  # PROJECT_PATH: ConsoleApp1\ConsoleApp1.csproj
-  # TEST_PROJECT_PATH: TestProject1\TestProject1.csproj
 
 jobs:
-
   build:
-    uses: ./.github/workflows/_build.yml
+    uses: ./.github/workflows/templates/build.yml
     with:
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
       test_project_path: TestProject1\TestProject1.csproj
-  
-  # build:
-    # runs-on: [self-hosted, windows]
-
-    # steps:
-      # - name: checkout repository
-        # uses: actions/checkout@v4
-        # with:
-          # clean: true
- 
-      # - name: setup dotnet
-        # uses: actions/setup-dotnet@v4
-        # with:
-          # dotnet-version: ${{ env.dotnet_version }}
-        # env:
-          # dotnet_install_dir: ${{ runner.tool_cache }}\dotnet
-
-      # - name: build
-        # run: dotnet build ${{ env.project_path }} -c release --packages ${{ env.nuget_packages_directory }}
-
-      # - name: test
-        # run: |
-          # dotnet build ${{ env.test_project_path }} -c release --packages ${{ env.nuget_packages_directory }}
-          # dotnet test ${{ env.test_project_path }} -c release --no-build
 
   deploy_prod1:
-    uses: ./.github/workflows/_deploy.yml
+    uses: ./.github/workflows/templates/deploy.yml
     with:
       github_environment: production
       aspnetcore_environment: prod_wit
@@ -60,7 +26,7 @@ jobs:
     needs: build
 
   deploy_prod2:
-    uses: ./.github/workflows/_deploy.yml
+    uses: ./.github/workflows/templates/deploy.yml
     with:
       github_environment: production2
       aspnetcore_environment: prod_srem
@@ -70,33 +36,3 @@ jobs:
       iis_app_pool: kfm-api
       deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
-
-
-  # deploy_production:
-    # runs-on: [self-hosted, windows]
-    # needs: build
-    # environment: production
-    # env:
-      # DEPLOYMENT_PATH: C:\rehau\services\dev\REH.KFM
-
-    # steps:
-      # - name: Checkout repository
-        # uses: actions/checkout@v4
-        # with:
-          # clean: true
-    
-      # - name: Setup dotnet
-        # uses: actions/setup-dotnet@v4
-        # with:
-          # dotnet-version: ${{ env.DOTNET_VERSION }}
-        # env:
-          # DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
-
-      # # - name: Restore dependencies
-        # # run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      # - name: Build
-        # run: dotnet build ${{ env.PROJECT_PATH }} -c release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      # - name: Publish
-        # run: dotnet publish "${{ env.PROJECT_PATH }}" -c release -o "${{ env.DEPLOYMENT_PATH }}" /p:EnvironmentName=$Environment --no-build

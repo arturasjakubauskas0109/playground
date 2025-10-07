@@ -35,7 +35,7 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore --packages ${{ env.NUGET_PACKAGES_CACHE_DIR }}
 
-      - name: Build project
+      - name: Build
         run: dotnet build ${{ inputs.project_path }} -c Release --no-restore --packages ${{ env.NUGET_PACKAGES_CACHE_DIR }}
 
       - name: Test
