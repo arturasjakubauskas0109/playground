@@ -35,11 +35,37 @@ jobs:
       - name: Build
         run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
+      # - name: Test
+        # run: |
+          # dotnet restore ${{ env.PROJECT_PATH }} --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+          # dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+          # dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
+
+  Test AAA:
+    runs-on: [self-hosted, windows]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
+    
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+        env:
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
+
+      - name: Restore dependencies
+        run: dotnet restore --packages ${{ env.TEST_PROJECT }}
+
+      - name: Build
+        run: dotnet build ${{ env.TEST_PROJECT }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+
       - name: Test
         run: |
-          dotnet restore ${{ env.PROJECT_PATH }} --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-          dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
-          dotnet test ${{ env.TEST_PROJECT }} --no-build
+          dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
 
   deploy_production:
     runs-on: [self-hosted, windows]
