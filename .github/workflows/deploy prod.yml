@@ -40,7 +40,7 @@ jobs:
   deploy_prod1:
     uses: ./.github/workflows/_deploy.yml
     with:
-      environment: production
+      environment: "production"
       dotnet_version: "9.x"
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM
@@ -49,7 +49,7 @@ jobs:
   deploy_prod2:
     uses: ./.github/workflows/_deploy.yml
     with:
-      environment: production
+      environment: "production"
       dotnet_version: "9.x"
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM
@@ -59,7 +59,7 @@ jobs:
   deploy_prod3:
     uses: ./.github/workflows/_deploy.yml
     with:
-      environment: production
+      environment: "production"
       dotnet_version: "9.x"
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM
