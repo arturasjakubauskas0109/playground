@@ -14,41 +14,28 @@ env:
 
 jobs:
   build:
-    uses: ./.github/workflows/_build.yml
-    with:
-      dotnet_version: "9.x"
-      project_path: ConsoleApp1\ConsoleApp1.csproj
+    runs-on: [self-hosted, windows]
 
-  test:
-    needs: build
-    uses: ./.github/workflows/_test.yml
-    with:
-      dotnet_version: "9.x"
-      project_path: TestProject1\TestProject1.csproj
-
-  # build:
-    # runs-on: [self-hosted, windows]
-
-    # steps:
-      # - name: Checkout repository
-        # uses: actions/checkout@v4
-        # with:
-          # clean: true
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+        with:
+          clean: true
  
-      # - name: Setup dotnet
-        # uses: actions/setup-dotnet@v4
-        # with:
-          # dotnet-version: ${{ env.DOTNET_VERSION }}
-        # env:
-          # DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.dotnet_version }}
+        env:
+          dotnet_install_dir: ${{ runner.tool_cache }}\dotnet
 
-      # - name: Build
-        # run: dotnet build ${{ env.PROJECT_PATH }} -c release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
+      - name: build
+        run: dotnet build ${{ env.project_path }} -c release --packages ${{ env.nuget_packages_directory }}
 
-      # - name: Test
-        # run: |
-          # dotnet build ${{ env.TEST_PROJECT_PATH }} -c Release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-          # dotnet test ${{ env.TEST_PROJECT_PATH }} -c Release --no-build
+      - name: test
+        run: |
+          dotnet build ${{ env.test_project_path }} -c release --packages ${{ env.nuget_packages_directory }}
+          dotnet test ${{ env.test_project_path }} -c release --no-build
 
   # test:
     # runs-on: [self-hosted, windows]
@@ -78,7 +65,8 @@ jobs:
           # dotnet test ${{ env.TEST_PROJECT }} --configuration Release --no-build
 
   deploy_prod1:
-    needs: test
+    needs: build
+    environment: production
     uses: ./.github/workflows/_deploy.yml
     with:
       dotnet_version: "9.x"
@@ -86,7 +74,8 @@ jobs:
       deployment_path: C:\rehau\services\dev\REH.KFM
 
   deploy_prod2:
-    needs: test
+    needs: build
+    environment: production
     uses: ./.github/workflows/_deploy.yml
     with:
       dotnet_version: "9.x"
@@ -94,7 +83,8 @@ jobs:
       deployment_path: C:\rehau\services\dev\REH.KFM
 
   deploy_prod3:
-    needs: test
+    needs: build
+    environment: production
     uses: ./.github/workflows/_deploy.yml
     with:
       dotnet_version: "9.x"

@@ -1,5 +1,6 @@
 name: Dotnet Build
 description: Builds dotnet project
+
 inputs:
   dotnet_version:
     required: true
@@ -11,5 +12,20 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Build
-      run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ inputs.nuget_packages_directory }}
+    - name: checkout repository
+      uses: actions/checkout@v4
+      with:
+        clean: true
+ 
+    - name: setup dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet_version }}
+      env:
+        dotnet_install_dir: ${{ runner.tool_cache }}\dotnet
+        
+    - name: Restore dependencies
+      run: dotnet restore ${{ inputs.project_path }} --packages ${{ inputs.NUGET_PACKAGES_DIRECTORY }}
+
+    - name: build
+      run: dotnet build ${{ inputs.project_path }} -c release --no-restore --packages ${{ env.nuget_packages_directory }}
