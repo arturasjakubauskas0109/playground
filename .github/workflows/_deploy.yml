@@ -4,7 +4,7 @@ description: Deploys dotnet project
 on:
   workflow_call:
     inputs:
-      environment:
+      github_environment:
         required: true
         type: string
       dotnet_version:
@@ -23,7 +23,7 @@ env:
 jobs:
   deploy:
     runs-on: [self-hosted, windows]
-    environment: ${{ inputs.environment }}
+    environment: ${{ inputs.github_environment }}
 
     steps:
       - name: Checkout repository
