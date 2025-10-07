@@ -8,8 +8,8 @@ on:
   
 env:
   DOTNET_VERSION: "9.x"
-  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../../_nuget/packages
-  PROJECT_PATH: REH.KFM.Service/REH.KFM.Service.csproj
+  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}\..\..\_nuget\packages
+  PROJECT_PATH: REH.KFM.Service\REH.KFM.Service.csproj
 
 jobs:
   build:
@@ -26,7 +26,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
         env:
-          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
 
       - name: Restore dependencies
         run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
@@ -42,7 +42,7 @@ jobs:
     needs: build
     environment: production
     env:
-      IIS_DEPLOYMENT_PATH: C:/rehau/services/dev/REH.KFM
+      IIS_DEPLOYMENT_PATH: C:\rehau\services\dev\REH.KFM
 
     steps:
       - name: Checkout repository
@@ -55,7 +55,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
         env:
-          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
+          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}\dotnet
 
       - name: Restore dependencies
         run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
