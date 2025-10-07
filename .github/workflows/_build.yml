@@ -38,7 +38,7 @@ jobs:
       - name: Build project
         run: dotnet build ${{ inputs.project_path }} -c Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
-      - name: test
+      - name: Test
         if: ${{ inputs.test_project_path != '' }}
         run: |
           dotnet build ${{ inputs.test_project_path }} -c Release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}

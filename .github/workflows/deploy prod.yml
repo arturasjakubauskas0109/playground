@@ -49,6 +49,7 @@ jobs:
     uses: ./.github/workflows/_deploy.yml
     with:
       github_environment: production
+      aspnetcore_environment: prod_wit
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM
@@ -58,6 +59,7 @@ jobs:
     uses: ./.github/workflows/_deploy.yml
     with:
       github_environment: production2
+      aspnetcore_environment: "prod_srem"
       dotnet_version: "9.x"
       project_path: ConsoleApp1\ConsoleApp1.csproj
       deployment_path: C:\rehau\services\dev\REH.KFM

@@ -7,6 +7,9 @@ on:
       github_environment:
         required: true
         type: string
+      aspnetcore_environment:
+        required: true
+        type: string
       dotnet_version:
         required: true
         type: string
@@ -43,5 +46,5 @@ jobs:
         run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Publish
-        run: dotnet publish "${{ inputs.project_path }}" -c release -o "${{ inputs.deployment_path }}" /p:EnvironmentName=$Environment --no-build
+        run: dotnet publish "${{ inputs.project_path }}" -c release -o "${{ inputs.deployment_path }}" /p:EnvironmentName=${{ inputs.aspnetcore_environment }} --no-build
 

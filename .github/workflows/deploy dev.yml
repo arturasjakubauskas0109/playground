@@ -1,91 +1,23 @@
 name: Deploy dev
 
 on:
-  push:
-    branches:
-      - develop
   workflow_dispatch:
-  
-env:
-  NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}/../../_nuget/packages
-  DOTNET_VERSION: "9.x"
 
 jobs:
+
   build:
-    runs-on: [self-hosted, windows]
+    uses: ./.github/workflows/_build.yml
+    with:
+      dotnet_version: 9.x
+      project_path: ConsoleApp1\ConsoleApp1.csproj
+      test_project_path: TestProject1\TestProject1.csproj
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          clean: true
-    
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-        env:
-          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
-
-      - name: Restore dependencies
-        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      - name: Test
-        run: dotnet test --no-build
-
-  deploy_production:
-    runs-on: [self-hosted, windows]
+  deploy_wit_dev:
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      github_environment: development
+      aspnetcore_environment: Development
+      dotnet_version: 9.x
+      project_path: ConsoleApp1\ConsoleApp1.csproj
+      deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
-    environment: production
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          clean: true
-    
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-        env:
-          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
-
-      - name: Restore dependencies
-        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      - name: Test
-        run: dotnet test --no-build
-
-  deploy_production2:
-    runs-on: [self-hosted, windows]
-    needs: build
-    environment: production2
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          clean: true
-    
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-        env:
-          DOTNET_INSTALL_DIR: ${{ runner.tool_cache }}/dotnet
-
-      - name: Restore dependencies
-        run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      - name: Build
-        run: dotnet build --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-
-      - name: Test
-        run: dotnet test --no-build
