@@ -9,7 +9,7 @@ on:
 env:
   DOTNET_VERSION: "9.x"
   NUGET_PACKAGES_DIRECTORY: ${{ github.workspace }}\..\..\_nuget\packages
-  PROJECT_PATH: REH.KFM.Service\REH.KFM.Service.csproj
+  PROJECT_PATH: .\ConsoleApp1.csproj
 
 jobs:
   build:
