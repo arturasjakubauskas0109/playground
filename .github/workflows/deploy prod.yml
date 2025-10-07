@@ -55,7 +55,7 @@ jobs:
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
       iis_server_hostname: BSS-PC-75
-      iis_app_pool_name: kfm-api
+      iis_app_pool: kfm-api
       deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
 
@@ -67,7 +67,7 @@ jobs:
       dotnet_version: 9.x
       project_path: ConsoleApp1\ConsoleApp1.csproj
       iis_server_hostname: BSS-PC-75
-      iis_app_pool_name: kfm-api
+      iis_app_pool: kfm-api
       deployment_path: C:\rehau\services\dev\REH.KFM
     needs: build
 
