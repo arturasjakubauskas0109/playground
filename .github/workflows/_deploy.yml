@@ -61,3 +61,13 @@ jobs:
                          -ScriptBlock { param($p1) Stop-WebAppPool -Name $p1 } `
                          -ArgumentList "${{ inputs.iis_app_pool }}"
 
+      - name: Copy published api to deployment path
+        run: |
+          xcopy .\publish\* "${{ inputs.deployment_path }}" /E /Y /I
+
+      - name: Start IIS App Pool
+        shell: powershell
+        run: |
+          Invoke-Command -ComputerName "${{ inputs.iis_server_hostname }}" `
+                         -ScriptBlock { param($p1) Start-WebAppPool -Name $p1 } `
+                         -ArgumentList "${{ inputs.iis_app_pool }}"
