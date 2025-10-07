@@ -1,5 +1,5 @@
-name: Build
-description: Builds dotnet project and optionally run tests if test project path is specified
+name: Test
+description: Builds dotnet tests project and runs tests
 
 on:
   workflow_call:
@@ -10,15 +10,12 @@ on:
       project_path:
         required: true
         type: string
-      test_project_path:
-        required: false
-        type: string
 
 env:
   NUGET_PACKAGES_DIRECTORY: ..\..\_nuget\packages
 
 jobs:
-  build:
+  test:
     runs-on: [self-hosted, windows]
 
     steps:
@@ -35,11 +32,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
-      - name: Build project
+      - name: Build tests project
         run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
 
       - name: Test
-        if: ${{ inputs.test_project_path != '' }}
-        run: |
-          dotnet build ${{ inputs.test_project_path }} -c Release --packages ${{ env.NUGET_PACKAGES_DIRECTORY }}
-          dotnet test ${{ inputs.test_project_path }} -c Release --no-build
+        run: dotnet test ${{ inputs.project_path }} -c Release --no-build
