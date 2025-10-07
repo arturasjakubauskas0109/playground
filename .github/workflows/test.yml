@@ -16,7 +16,6 @@ env:
 jobs:
   test:
     runs-on: [self-hosted, windows]
-    needs: build
 
     steps:
       - name: Checkout repository
