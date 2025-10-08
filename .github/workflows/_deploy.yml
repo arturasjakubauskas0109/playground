@@ -35,6 +35,13 @@ jobs:
     environment: ${{ inputs.github_environment }}
 
     steps:
+      - name: Print runner info
+        shell: powershell
+        run: |
+          Write-Host "COMPUTERNAME = $env:COMPUTERNAME"
+          hostname
+          ipconfig /all
+    
       - name: Checkout repository
         uses: actions/checkout@v4
 
